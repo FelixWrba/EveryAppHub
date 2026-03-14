@@ -34,10 +34,19 @@ body {
     max-width: 1000px;
     margin: auto;
     min-height: 100vh;
+    padding: 1em;
 }
 
-header, footer {
+header,
+footer {
     padding: 1em;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(4px);
+    background: linear-gradient(white, transparent);
 }
 
 h1 {
@@ -46,7 +55,12 @@ h1 {
 }
 
 h2 {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+h3 {
+    font-size: 1.5rem;
     font-weight: bolder;
 }
 
@@ -57,4 +71,53 @@ button {
 
 input {
     padding: 0.25em;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.w-list-item {
+    margin-bottom: 1em;
+}
+
+.e-list-item {
+    margin-bottom: 1em;
+}
+
+.training-exercise-title {
+    padding: 0.5rem 2rem 1.5rem;
+}
+
+.training-workout-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 0.5rem;
+}
+
+.training-workout-title button {
+    padding: 0rem;
+}
+
+.training-control-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.training-info-message {
+    padding: 1rem 1rem 1.5rem;
+}
+
+@media (max-width: 440px) {
+    .training-control-buttons {
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+    }
+
+    .training-control-buttons button {
+        flex: 1;
+    }
 }

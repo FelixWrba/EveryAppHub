@@ -4,6 +4,7 @@
 
 1. CRUD Workout list
 2. Workout contains: sets count, list with exercises name and rep range
+3. Training mode: cycle through exercises of workout
 
 ## Details
 

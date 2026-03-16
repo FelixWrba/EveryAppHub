@@ -74,7 +74,7 @@ function getDashboardView() {
 }
 
 function handleWorkoutCreate() {
-    createWorkout($('#w-name').value.trim(),serialize(Number($('#w-sets').value) || 3));
+    createWorkout($('#w-name').value.trim(), serialize(Number($('#w-sets').value) || 3));
     renderPage(getDashboardView());
 }
 
@@ -87,7 +87,12 @@ function getWorkoutView(id) {
 
     let current = workouts[index];
 
-    let listHTML = current.exercises.map(exercise => `<li class="e-list-item">${exercise.reps}x ${x(exercise.name)} - <button onclick="handleExerciseRemove(${id}, ${exercise.id})">Remove</button></li>`).join('');
+    let listHTML = current.exercises.map(exercise => `<li class="e-list-item">
+        ${exercise.reps}x ${x(exercise.name)} - 
+        <button onclick="handleExerciseRemove(${id}, ${exercise.id})" aria-label="Remove">X</button>
+        <button onclick="handleExerciseSwap(${index}, ${exercise.id}, -1)" aria-label="Move up">&uarr;</button>
+        <button onclick="handleExerciseSwap(${index}, ${exercise.id}, 1)" aria-label="Move down">&darr;</button>
+        </li>`).join('');
 
 
     if (!listHTML) {
@@ -119,12 +124,12 @@ function handleWorkoutDelete(id) {
 }
 
 function handleWorkoutRename(workoutIndex, workoutId) {
-    if(!workouts[workoutIndex]) {
+    if (!workouts[workoutIndex]) {
         return;
     }
 
     const newName = window.prompt('Enter a new name for this Workout:', workouts[workoutIndex].name);
-    if(!newName || !newName.trim()) {
+    if (!newName || !newName.trim()) {
         return;
     }
     workouts[workoutIndex].name = newName.trim();
@@ -134,12 +139,12 @@ function handleWorkoutRename(workoutIndex, workoutId) {
 }
 
 function handleWorkoutSetsChange(workoutIndex, workoutId) {
-    if(!workouts[workoutIndex]) {
+    if (!workouts[workoutIndex]) {
         return;
     }
 
     const newSets = window.prompt('Enter a new sets count for this Workout:', workouts[workoutIndex].sets);
-    if(!newSets || isNaN(Number(newSets))) {
+    if (!newSets || isNaN(Number(newSets))) {
         return;
     }
     workouts[workoutIndex].sets = serialize(Number(newSets));
@@ -154,8 +159,33 @@ function handleExerciseAdd(id) {
 }
 
 function handleExerciseRemove(id, exerciseId) {
+    if(!window.confirm('Should this Exercise be removed?')) {
+        return;
+    }
+
     removeExercise(id, exerciseId);
     renderPage(getWorkoutView(id));
+}
+
+function handleExerciseSwap(workoutIndex, id, relative) {
+    if (!workouts[workoutIndex]) {
+        return;
+    }
+
+    const exercises = workouts[workoutIndex].exercises;
+    const index = exercises.findIndex(exercise => exercise.id === id);
+
+    if (!exercises[index] || !exercises[index + relative]) {
+        return;
+    }
+
+    const targetExercise = { ...exercises[index] };
+
+    exercises[index] = exercises[index + relative];
+    exercises[index + relative] = targetExercise;
+
+    renderPage(getWorkoutView(workouts[workoutIndex].id));
+    saveWorkouts();
 }
 
 function getTrainingView(workoutIndex, set, exerciseIndex) {

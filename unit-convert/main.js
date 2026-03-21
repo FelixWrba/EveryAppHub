@@ -103,10 +103,10 @@ function getUnitHelpList() {
 }
 
 function getUnitOverview() {
-    return `<form onsubmit="handleUnitConvert(); return false">
-    <input type="text" placeholder="3km" id="unit-field" autocomplete="off" spellcheck="false" />
+    return `<form onsubmit="handleUnitConvert(); return false" class="unit-form">
+    <input type="text" placeholder="Beispiel: 3km" id="unit-field" autocomplete="off" spellcheck="false" />
     <button type="submit">Umrechnen</button></form>
-    <p id="error"></p>
+    <p id="error">&#9432; Ergebnisse sind auf 6 Nachkommastellen gerundet.</p>
     <section id="results"></section>
     <section>${getUnitHelpList()}</section>`;
 }
@@ -154,7 +154,7 @@ function getUnitConversions(unit, type, value) {
 
     conversions = `<h2>${value} ${units[unit].types[type].name} = </h2><ul>`;
     conversions += units[unit].types
-        .map(type => `<li>${roundNumber(siUnit / type.factor)} ${type.name}</li>`).join('');
+        .map(type => `<li><span class="convert-number">${roundNumber(siUnit / type.factor)}</span> ${type.name}</li>`).join('');
     conversions += '</ul>'
 
     return { conversions, conversionError };
@@ -188,7 +188,7 @@ function roundNumber(number) {
     if (asString.includes('e') || !asString.includes('.')) {
         return asString;
     }
-    return number;
+    return number.toFixed(6);
 
     const precision = 3;
     let validFigures = 0;

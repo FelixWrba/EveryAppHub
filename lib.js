@@ -14,3 +14,7 @@ function x(text) {
 function serialize(number) {
     return Math.max(Math.abs(number), 1);
 }
+
+function lerp(from, to, weight) {
+    return weight * (to - from) + from;
+}

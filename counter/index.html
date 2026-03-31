@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlen Tracker App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/main.css">
+    <meta name="description"
+        content="Diese Zahl-Tracking App speichert und verwaltet alle möglichen Zahlen wie Finanzen, Countdowns oder persönliche Ziele">
+</head>
+
+<body>
+    <header>
+        <a href="/" aria-label="Home" title="Home">&larr;</a>
+        <h1>Zahlen-Tracker</h1>
+    </header>
+
+    <main id="app">
+        <ul id="c-list">
+            <li>
+                <button>&lt;</button><input type="number" id="c-li-456534236" value="10"><button>&gt;</button>
+                <span>Testcounter</span><button>Umbenennen</button><button>Löschen</button>
+            </li>
+        </ul>
+
+        <form onsubmit="console.log('submit'); return false">
+            <input type="text" placeholder="Name" id="c-name">
+            <div class="counter-options">
+                <button>Zahl</button>
+                <button>Währung</button>
+                <button>Countdown</button>
+            </div>
+            <button>Erstellen</button>
+        </form>
+    </main>
+
+    <footer>
+        Copyright &copy; 2026 Felix Wrba. Alle Rechte vorbehalten.
+    </footer>
+
+    <script src="../lib.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

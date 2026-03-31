@@ -108,8 +108,34 @@ const units = [
             { name: '°Kelvin', factor: 1, short: 'k' },
             { name: '°Fahrenheit', factor: -1, short: 'f', to: n => 1.8 * n - 459.67, from: n => (n + 459.67) * 0.555555556 },
         ]
+    },
+    {
+        name: 'Speicherplatz',
+        siUnit: 'Byte',
+        types: [
+            { name: 'Byte', factor: 1, short: 'b' },
+            { name: 'Kilobyte', factor: 1000, short: 'kb' },
+            { name: 'Megabyte', factor: 1000000, short: 'mb' },
+            { name: 'Gigabyte', factor: 1000000000, short: 'gb' },
+            { name: 'Terabyte', factor: 1000000000000, short: 'tb' },
+            { name: 'Bit', factor: 0.125, short: 'bit' },
+            { name: 'Kilobit', factor: 125, short: 'kbit' },
+            { name: 'Megabit', factor: 125000, short: 'mbit' },
+            { name: 'Gigabit', factor: 125000000, short: 'gbit' },
+            { name: 'Terabit', factor: 125000000000, short: 'tbit' },
+            { name: 'Kibibyte', factor: 1024, short: 'kib' },
+            { name: 'Mebibyte', factor: 1048576, short: 'meb' },
+            { name: 'Gibibyte', factor: 1073741824, short: 'gib' },
+            { name: 'Tebibyte', factor: 1099511627776, short: 'teb' },
+        ]
     }
 ]
+
+const defaultUseComma = Intl.NumberFormat()
+    .formatToParts(1.1)
+    .find(part => part.type === 'decimal')
+    .value === ',';
+
 const shortcutLookup = getShortcutLookup();
 
 function getShortcutLookup() {
@@ -123,13 +149,19 @@ function getShortcutLookup() {
 }
 
 function getUnitHelpList() {
-    return units.map(unit => `<h2>${unit.name}</h2><ul>${unit.types.map(type => `<li>[ ${type.short} ] = 1 ${type.name} = ${type.factor === -1 ? type.to(1) : type.factor} ${unit.siUnit}</li>`).join('')
+    let helpHTML = units.map(unit => `<h2>${unit.name}</h2><ul>${unit.types.map(type => `<li>[ ${type.short} ] = 1 ${type.name} = ${type.factor === -1 ? type.to(1) : type.factor} ${unit.siUnit}</li>`).join('')
         }</ul>`).join('');
+
+    if(defaultUseComma) {
+        helpHTML = helpHTML.replace(/\./g, ',');
+    }
+
+    return helpHTML;
 }
 
 function getUnitOverview() {
     return `<form onsubmit="handleUnitConvert(); return false" class="unit-form">
-    <input type="text" placeholder="Beispiel: 3km" id="unit-field" autocomplete="off" spellcheck="false" />
+    <input type="text" placeholder="Beispiel: 104F (Fahrenheit)" id="unit-field" autocomplete="off" spellcheck="false" />
     <button type="submit">Umrechnen</button></form>
     <p id="error">&#9432; Ergebnisse sind auf 6 Nachkommastellen gerundet.</p>
     <section id="results"></section>
@@ -138,7 +170,7 @@ function getUnitOverview() {
 
 function handleUnitConvert() {
     $('#results').innerHTML = '';
-    const { value, shortcut, error } = parseInput($('#unit-field').value);
+    const { value, shortcut, useComma, error } = parseInput($('#unit-field').value);
 
     if (error) {
         $('#error').innerHTML = error;
@@ -153,7 +185,7 @@ function handleUnitConvert() {
     }
     $('#error').innerHTML = '';
 
-    const { conversions, conversionError } = getUnitConversions(unit, type, value);
+    const { conversions, conversionError } = getUnitConversions(unit, type, value, useComma);
 
     if (conversionError) {
         $('#error').innerHTML = error;
@@ -164,7 +196,7 @@ function handleUnitConvert() {
     setTimeout(() => $('#results').scrollIntoView({ behavior: 'smooth' }), 50);
 }
 
-function getUnitConversions(unit, type, value) {
+function getUnitConversions(unit, type, value, useComma) {
     let conversions, conversionError;
     /*
     Example: 100cm => ?? km
@@ -187,13 +219,29 @@ function getUnitConversions(unit, type, value) {
         .join('');
     conversions += '</ul>'
 
+    if (useComma) {
+        conversions = conversions.replace(/\./g, ',');
+    }
+
     return { conversions, conversionError };
 }
 
 function parseInput(input) {
     let value, shortcut, error;
+    let useComma = defaultUseComma;
+    // check which decimal seperator in input
+    for(let i = 0; i < input.length; i++) {
+        if(input[i] === ',') {
+            useComma = true;
+            break;
+        }
+        else if(input[i] === '.') {
+            useComma = false;
+            break;
+        }
+    }
 
-    input = input.trim();
+    input = input.trim().toLowerCase().replace(',', '.');
     if (input === '' || !!input.replace(/[0-9]+\.?[0-9]*[A-z]+[0-9]*/, '')) {
         error = 'Ungültige Eingabe. Eingabe ist wie folgt zu formatieren: [Zahl][Abkürzung der Einheit]';
     }
@@ -206,7 +254,7 @@ function parseInput(input) {
         }
     }
 
-    return { value, shortcut, error };
+    return { value, shortcut, useComma, error };
 }
 
 function roundNumber(number) {

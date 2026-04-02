@@ -8,13 +8,19 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+:root {
+    --c-text:#222;
+    --c-bg: #fefefe;
+    --c-pr: #222;
+}
+
 html {
     overscroll-behavior: none;
 }
 
 body {
-    color: #222;
-    background: #fefefe;
+    color: var(--c-text);
+    background: var(--c-bg);
     line-height: 1.6;
     font-family:
         Inter,
@@ -51,7 +57,7 @@ header {
     position: sticky;
     top: 0;
     backdrop-filter: blur(4px);
-    background: linear-gradient(white, transparent);
+    background: linear-gradient(var(--c-bg), transparent);
     display: flex;
     align-items: center;
 }
@@ -85,10 +91,10 @@ h3 {
 button {
     padding: 0.25em 2em;
     cursor: pointer;
-    border: 1px solid #222;
+    border: 1px solid var(--c-text);
     border-radius: 4px;
     background-color: #eee;
-    color: #222;
+    color: var(--c-text);
 }
 
 button:hover {
@@ -108,9 +114,9 @@ button:disabled {
 
 input {
     padding: 0.25em;
-    border: 1px solid #222;
+    border: 1px solid var(--c-text);
     border-radius: 4px;
-    color: #222;
+    color: var(--c-text);
 }
 
 @media (max-width: 440px) {

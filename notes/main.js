@@ -32,7 +32,7 @@ function saveNotes() {
         saveRequested = false;
         lastSave = now;
     }
-    else if(!saveRequested) {
+    else if (!saveRequested) {
         saveRequested = true;
         setTimeout(saveNotes, saveDelay);
     }
@@ -78,7 +78,10 @@ function getNoteView(noteId) {
     const note = notes[index];
 
     return `<div class="note-option-cta">
-    <button onclick="renderPage(getDashboardView())">Zurück</button><button onclick="handleNoteDeleteRequest(${noteId})">Löschen</button>
+    <button onclick="renderPage(getDashboardView())">Zurück</button>
+    <button onclick="handleNoteDeleteRequest(${noteId})">Löschen</button>
+    <button onclick="renderPage(getShareView(${noteId}))">Teilen</button>
+    <button onclick="handleNotePrintRequest(${noteId})">Drucken</button>
     </div>
     <div class="note-form">
     <input type="text" value="${note.name}" id="n-name" oninput="handleNameInput(event, ${index})" autocomplete="off" placeholder="Unbenannt" />
@@ -112,6 +115,88 @@ function handleTextInput(event, noteIndex) {
     saveNotes();
 }
 
+function handleNotePrintRequest(noteId) {
+    renderPage(getPrintView(noteId));
+
+    window.print();
+}
+
+function getPrintView(noteId) {
+    const index = notes.findIndex(note => note.id === noteId);
+    if (index === -1) {
+        renderPage(getDashboardView());
+        return;
+    }
+    const { name, text } = notes[index];
+
+    return `<div onclick="renderPage(getNoteView(${noteId}))" class="print-view">
+    <h2>${name || 'Unbenannte Notiz'}</h2><pre>${text}</pre>
+    </div>`;
+}
+
+function getShareView(noteId) {
+    const index = notes.findIndex(note => note.id === noteId);
+    if (index === -1) {
+        renderPage(getDashboardView());
+        return;
+    }
+    const note = { id: notes[index].id, name: notes[index].name || 'Unbenannt', text: notes[index].text || 'Kein Inhalt' };
+    const link = encodeURI(`${document.location.origin}/notes/?n=${note.name}&t=${note.text}`);
+
+    const qrCode = qrcode(0, 'L');
+    qrCode.addData(link);
+    qrCode.make();
+
+    return `<button onclick="renderPage(getNoteView(${noteId}))">Zurück</button>
+    ${navigator.share ? `<button onclick="shareLink('${link}')">Teilen</button>` : ''}
+    ${navigator.clipboard ? `<button onclick="copyLink('${link}')">Link kopieren</button>` : ''}
+    <p id="share-info" class="notes-info"></p>
+    <div class="note-share-view">
+    ${qrCode.createImgTag()}
+    <h2>${note.name}</h2>
+    <a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a>
+    </div>`;
+}
+
+async function shareLink(link) {
+    try {
+        await navigator.share({ url: link });
+    }
+    catch (shareError) {
+        console.error(shareError);
+        $('#share-info').innerText = shareError;
+    }
+}
+
+async function copyLink(link) {
+    if (navigator.clipboard) {
+        try {
+            await navigator.clipboard.writeText(link);
+        }
+        catch (writeError) {
+            console.error(writeError);
+            $('#share-info').innerText = writeError;
+        }
+    }
+}
+
+function handleShareRequest() {
+    const params = new URLSearchParams(document.location.search);
+    const name = params.get('n');
+    const text = params.get('t');
+
+    if (!name || !text) {
+        return;
+    }
+
+    const id = Date.now();
+    notes.push({ id, name: 'Share: ' + name, text });
+    saveNotes();
+
+    renderPage(getNoteView(id));
+    window.history.pushState({}, document.title, window.location.pathname);
+}
+
 function renderPage(html) {
     $('#app').innerHTML = html;
 }
@@ -119,5 +204,7 @@ function renderPage(html) {
 (function init() {
 
     renderPage(getDashboardView());
+
+    handleShareRequest();
 
 })();

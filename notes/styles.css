@@ -70,6 +70,8 @@
     background-color: white;
     color: black;
     min-height: 200vh;
+    max-width: 100%;
+    white-space: pre-wrap;
 }
 
 .note-share-view {

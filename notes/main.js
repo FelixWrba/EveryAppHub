@@ -130,7 +130,7 @@ function getPrintView(noteId) {
     const { name, text } = notes[index];
 
     return `<div onclick="renderPage(getNoteView(${noteId}))" class="print-view">
-    <h2>${name || 'Unbenannte Notiz'}</h2><pre>${text}</pre>
+    <h2>${name || 'Unbenannte Notiz'}</h2><div>${text}</div>
     </div>`;
 }
 
@@ -142,17 +142,24 @@ function getShareView(noteId) {
     }
     const note = { id: notes[index].id, name: notes[index].name || 'Unbenannt', text: notes[index].text || 'Kein Inhalt' };
     const link = encodeURI(`${document.location.origin}/notes/?n=${note.name}&t=${note.text}`);
+    let qrCodeImage = null;
 
-    const qrCode = qrcode(0, 'L');
-    qrCode.addData(link);
-    qrCode.make();
+    try {
+        const qrCode = qrcode(0, 'L');
+        qrCode.addData(link);
+        qrCode.make();
+        qrCodeImage = qrCode.createImgTag();
+    }
+    catch(error) {
+        console.error(error);
+    }
 
     return `<button onclick="renderPage(getNoteView(${noteId}))">Zurück</button>
     ${navigator.share ? `<button onclick="shareLink('${link}')">Teilen</button>` : ''}
     ${navigator.clipboard ? `<button onclick="copyLink('${link}')">Link kopieren</button>` : ''}
     <p id="share-info" class="notes-info"></p>
     <div class="note-share-view">
-    ${qrCode.createImgTag()}
+    ${qrCodeImage ? qrCodeImage : '<p class="notes-info">QR-Code konnte nicht erstellt werden.</p>'}
     <h2>${note.name}</h2>
     <a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a>
     </div>`;

@@ -15,7 +15,7 @@
 <body>
     <header>
         <a href="/" aria-label="Home" title="Home">&larr;</a>
-        <h1>AppHub - Infoseite</h1>
+        <h1>AppHub</h1>
     </header>
 
     <main id="app" class="about-page">
@@ -30,9 +30,9 @@
             <li>Der gesamte Client-seitige Code ist einsehbar und wird in Deutschland von Felix Wrba entwickelt</li>
         </ul>
         <div>
-            <button>Alle Daten exportieren</button>
-            <button>Neue Daten importieren</button>
-            <button>Gespeicherte Daten löschen</button>
+            <button id="export-btn">Alle Daten exportieren</button>
+            <button id="import-open-btn">Neue Daten importieren</button>
+            <button id="reset-btn">Gespeicherte Daten löschen</button>
         </div>
 
         <h2>Kontaktdaten</h2>
@@ -43,6 +43,16 @@
 
         <!-- <h2>Impressum</h2>
         <p>rgthjnbvfdeerthgfv</p> -->
+
+        <dialog id="import-modal">
+            <h2>Neue Daten importieren</h2>
+            <p>Durch das Importieren der gegebenen Daten werden möglicherweise alte Daten dieses Endgeräts überschrieben.</p>
+            <input type="file" id="import-picker" accept=".json" aria-label="JSON-Datei auswählen">
+            <p id="import-error"></p>
+
+            <button id="import-file-btn">Daten importieren</button>
+            <button id="import-close-btn">Abbrechen</button>
+        </dialog>
     </main>
 
     <footer>
@@ -53,7 +63,8 @@
             Github ansehen</p>
     </footer>
 
-    <script src="lib.js"></script>
+    <script src="/lib.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>

@@ -1,3 +1,8 @@
+/**
+ * Equivalent to the document.querySelector() method
+ * @param {string} selector
+ * @returns {HTMLElement | null}
+ */
 function $(selector) {
     return document.querySelector(selector);
 }

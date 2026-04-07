@@ -1,0 +1,23 @@
+{
+  "name": "apphub",
+  "version": "0.0.5",
+  "description": "Collection of web apps",
+  "homepage": "https://github.com/FelixWrba/apps#readme",
+  "bugs": {
+    "url": "https://github.com/FelixWrba/apps/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FelixWrba/apps.git"
+  },
+  "license": "UNLICENSED",
+  "author": "Felix Wrba",
+  "type": "commonjs",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}

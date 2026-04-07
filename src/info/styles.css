@@ -19,13 +19,6 @@
     padding: 1rem;
     border: 1px solid var(--c-text);
     border-radius: 0.5rem;
-    transition: all .1s;
-    transition-behavior: allow-discrete;
-    opacity: 0;
-}
-
-#import-modal:open {
-    opacity: 1;
 }
 
 #import-modal::backdrop {

@@ -12,7 +12,7 @@
 }
 
 .logo-box {
-    background: linear-gradient(to bottom in oklch, var(--c-pr), #22222280);
+    background: linear-gradient(to bottom in oklch, #22222280, var(--c-pr));
     color: white;
     padding: 0px 0.5rem;
     border-radius: 0.5rem;

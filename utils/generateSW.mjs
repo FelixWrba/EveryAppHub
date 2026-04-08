@@ -6,22 +6,25 @@ const excludeFiles = ['robots.txt', 'sw.js'];
 const version = packageJSON.version;
 
 (async function main() {
-    // try {
-        let files = await readdir(distDir, { recursive: true });
-        files = files.filter(file => !excludeFiles.includes(file) && file.includes('.'));
+  try {
+    // read all files for caching from src directory
+    let files = await readdir(distDir, { recursive: true });
+    // exclude certain files
+    files = files.filter(file => !excludeFiles.includes(file) && file.includes('.'));
 
-        const sw = getSW(version, files);
-        await writeFile('./src/sw.js', sw);
+    const swScript = computeSwScript(version, files);
+    await writeFile('./src/sw.js', swScript);
 
-        console.log('Service worker created successfully.');
+    console.log('Service worker created successfully.');
 
-    // } catch (err) {
-    //     console.error(`Failed to generate sw.js: ${err}`);
-    // }
+  } catch (error) {
+    console.error(`Failed to generate sw.js: ${error}`);
+  }
 })();
 
-function getSW(version, assets) {
-    return `const cacheName = 'apphub-v${version}';
+// insert the new version and assets for caching in the sw script
+function computeSwScript(version, assets) {
+  return `const cacheName = 'apphub-v${version}';
 
 const cacheAssets = ${JSON.stringify(assets)};
 

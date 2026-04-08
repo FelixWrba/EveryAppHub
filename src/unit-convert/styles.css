@@ -33,9 +33,13 @@ ul {
     font-size: 2rem;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 450px) {
     .unit-h1 {
         font-size: 1.75rem;
+    }
+
+    .unit-form button {
+        padding-inline: 1rem;
     }
 }
 

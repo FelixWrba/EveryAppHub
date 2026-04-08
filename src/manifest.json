@@ -58,12 +58,24 @@
     ],
     "shortcuts": [
         {
-            "name": "Einheitenumrechner",
-            "url": "/unit-convert"
+            "name": "Umrechner",
+            "url": "/unit-convert",
+            "icons": [
+                {
+                    "src": "/icons/covert_shortcut.png",
+                    "sizes": "192x192"
+                }
+            ]
         },
         {
             "name": "Notizen",
-            "url": "/notes"
+            "url": "/notes",
+            "icons": [
+                {
+                    "src": "/icons/notes_shortcut.png",
+                    "sizes": "192x192"
+                }
+            ]
         }
     ]
 }
